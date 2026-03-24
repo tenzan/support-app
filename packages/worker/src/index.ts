@@ -7,6 +7,9 @@ import { categoriesRouter } from './routes/categories'
 import { ticketsRouter } from './routes/tickets'
 import { attachmentsRouter } from './routes/attachments'
 import { webhooksRouter } from './routes/webhooks'
+import { availabilityTemplatesRouter } from './routes/availability-templates'
+import { availabilityRouter } from './routes/availability'
+import { bookingsRouter } from './routes/bookings'
 
 export type Env = {
   DB: D1Database
@@ -32,6 +35,9 @@ app.route('/api/categories', categoriesRouter)
 app.route('/api/tickets', ticketsRouter)
 app.route('/api/attachments', attachmentsRouter)
 app.route('/api/webhooks', webhooksRouter)
+app.route('/api/availability-templates', availabilityTemplatesRouter)
+app.route('/api/availability', availabilityRouter)
+app.route('/api/bookings', bookingsRouter)
 
 // Dev-only seed route
 app.post('/api/dev/seed', async (c) => {
