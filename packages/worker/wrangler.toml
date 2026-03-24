@@ -5,7 +5,7 @@ compatibility_date = "2024-12-18"
 [[d1_databases]]
 binding = "DB"
 database_name = "support-db"
-database_id = "placeholder-replace-with-real-id"
+database_id = "b02f8a1e-25ae-4486-8cf4-fa963f63b1e3"
 migrations_dir = "src/db/migrations"
 
 [[r2_buckets]]
