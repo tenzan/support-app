@@ -2,17 +2,32 @@ import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { api } from '../../lib/api-client'
 import { Badge, Select, Loading, EmptyState } from '../../components/ui'
-import type { Ticket, PaginatedResponse } from '@support-app/shared'
 import { formatLocalDate } from '../../lib/format'
+import type { Ticket, Department, Category, PaginatedResponse } from '@support-app/shared'
 
 export function AdminTicketList() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [data, setData] = useState<PaginatedResponse<Ticket> | null>(null)
+  const [departments, setDepartments] = useState<Department[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
 
   const status = searchParams.get('status') || ''
   const priority = searchParams.get('priority') || ''
+  const department = searchParams.get('department_id') || ''
   const page = searchParams.get('page') || '1'
+
+  useEffect(() => {
+    Promise.all([
+      api.get<Department[]>('/departments'),
+      api.get<Department[]>('/departments').then((depts) =>
+        Promise.all(depts.map((d) => api.get<Category[]>(`/categories/department/${d.id}`))),
+      ),
+    ]).then(([depts, catArrays]) => {
+      setDepartments(depts)
+      setCategories(catArrays.flat())
+    })
+  }, [])
 
   useEffect(() => {
     setLoading(true)
@@ -21,12 +36,16 @@ export function AdminTicketList() {
     params.set('page', page)
     if (status) params.set('status', status)
     if (priority) params.set('priority', priority)
+    if (department) params.set('department_id', department)
 
     api
       .get<PaginatedResponse<Ticket>>(`/tickets?${params}`)
       .then(setData)
       .finally(() => setLoading(false))
-  }, [status, priority, page])
+  }, [status, priority, department, page])
+
+  const deptMap = Object.fromEntries(departments.map((d) => [d.id, d.name]))
+  const catMap = Object.fromEntries(categories.map((c) => [c.id, c.name]))
 
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams)
@@ -43,11 +62,10 @@ export function AdminTicketList() {
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Tickets</h1>
 
-      <div className="flex gap-4 mb-6">
+      <div className="flex gap-4 mb-6 flex-wrap">
         <Select
           value={status}
           onChange={(e) => updateFilter('status', e.target.value)}
-          placeholder="All statuses"
           options={[
             { value: '', label: 'All statuses' },
             { value: 'new', label: 'New' },
@@ -62,13 +80,20 @@ export function AdminTicketList() {
         <Select
           value={priority}
           onChange={(e) => updateFilter('priority', e.target.value)}
-          placeholder="All priorities"
           options={[
             { value: '', label: 'All priorities' },
             { value: 'low', label: 'Low' },
             { value: 'medium', label: 'Medium' },
             { value: 'high', label: 'High' },
             { value: 'urgent', label: 'Urgent' },
+          ]}
+        />
+        <Select
+          value={department}
+          onChange={(e) => updateFilter('department_id', e.target.value)}
+          options={[
+            { value: '', label: 'All departments' },
+            ...departments.map((d) => ({ value: d.id, label: d.name })),
           ]}
         />
       </div>
@@ -85,6 +110,8 @@ export function AdminTicketList() {
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ticket</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Priority</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
@@ -99,10 +126,12 @@ export function AdminTicketList() {
                       </Link>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900">
-                      <Link to={`/admin/tickets/${ticket.id}`} className="hover:text-blue-600">
+                      <Link to={`/admin/tickets/${ticket.id}`} className="hover:text-blue-600 truncate block max-w-[200px]">
                         {ticket.subject}
                       </Link>
                     </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{deptMap[ticket.department_id] || '—'}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{catMap[ticket.category_id] || '—'}</td>
                     <td className="px-4 py-3">
                       <Badge variant="status" value={ticket.status}>
                         {ticket.status.replace(/_/g, ' ')}
