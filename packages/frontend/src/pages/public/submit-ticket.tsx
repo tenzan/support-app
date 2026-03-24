@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router'
 import { api } from '../../lib/api-client'
-import { Button, Input, Textarea, Select } from '../../components/ui'
+import { Button, Input, Textarea } from '../../components/ui'
 
 export function SubmitTicketPage() {
   const [searchParams] = useSearchParams()
@@ -14,7 +14,6 @@ export function SubmitTicketPage() {
     description: '',
     requester_email: '',
     requester_name: '',
-    priority: 'medium',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -99,17 +98,6 @@ export function SubmitTicketPage() {
           onChange={(e) => setForm({ ...form, subject: e.target.value })}
           required
           placeholder="Brief summary of your request"
-        />
-        <Select
-          label="Priority"
-          value={form.priority}
-          onChange={(e) => setForm({ ...form, priority: e.target.value })}
-          options={[
-            { value: 'low', label: 'Low' },
-            { value: 'medium', label: 'Medium' },
-            { value: 'high', label: 'High' },
-            { value: 'urgent', label: 'Urgent' },
-          ]}
         />
         <Textarea
           label="Description"

@@ -24,7 +24,15 @@ export type Env = {
 
 const app = new Hono<{ Bindings: Env }>()
 
-app.use('*', cors())
+app.use(
+  '*',
+  cors({
+    origin: (origin) => origin || '*',
+    credentials: true,
+    allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+  }),
+)
 app.use('*', errorHandler)
 
 app.get('/health', (c) => c.json({ status: 'ok', timestamp: new Date().toISOString() }))
