@@ -56,6 +56,12 @@ export function AdminTicketDetail() {
     loadData()
   }
 
+  const handlePriorityChange = async (newPriority: string) => {
+    if (!ticketId) return
+    await api.patch(`/tickets/${ticketId}`, { priority: newPriority })
+    loadData()
+  }
+
   if (loading) return <Loading />
   if (!ticket) return <div>Ticket not found</div>
 
@@ -185,6 +191,20 @@ export function AdminTicketDetail() {
                 { value: 'scheduled', label: 'Scheduled' },
                 { value: 'resolved', label: 'Resolved' },
                 { value: 'closed', label: 'Closed' },
+              ]}
+            />
+          </div>
+
+          <div className="rounded-lg border bg-white p-4">
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Priority</h3>
+            <Select
+              value={ticket.priority}
+              onChange={(e) => handlePriorityChange(e.target.value)}
+              options={[
+                { value: 'low', label: 'Low' },
+                { value: 'medium', label: 'Medium' },
+                { value: 'high', label: 'High' },
+                { value: 'urgent', label: 'Urgent' },
               ]}
             />
           </div>

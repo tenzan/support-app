@@ -17,7 +17,7 @@ export function AdminScheduling() {
   const [selected, setSelected] = useState<Template | null>(null)
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ name: '', description: '', timezone: 'UTC' })
+  const [form, setForm] = useState({ name: '', description: '', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })
 
   const loadTemplates = () => {
     api.get<Template[]>('/availability-templates').then(setTemplates).finally(() => setLoading(false))
@@ -59,7 +59,7 @@ export function AdminScheduling() {
           <form onSubmit={handleCreate} className="space-y-4">
             <Input label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             <Input label="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            <Input label="Timezone" value={form.timezone} onChange={(e) => setForm({ ...form, timezone: e.target.value })} />
+            <Input label="Timezone" value={form.timezone} onChange={(e) => setForm({ ...form, timezone: e.target.value })} placeholder={Intl.DateTimeFormat().resolvedOptions().timeZone} />
             <div className="flex gap-2">
               <Button type="submit">Create</Button>
               <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
@@ -87,7 +87,7 @@ export function AdminScheduling() {
                     Delete
                   </Button>
                 </div>
-                <p className="text-sm text-gray-500">{t.timezone}</p>
+                {t.description && <p className="text-sm text-gray-500">{t.description}</p>}
               </div>
             ))
           )}
@@ -96,7 +96,7 @@ export function AdminScheduling() {
         {selected && (
           <Card>
             <h2 className="text-lg font-semibold mb-4">{selected.name}</h2>
-            <p className="text-sm text-gray-500 mb-4">Timezone: {selected.timezone}</p>
+            {selected.description && <p className="text-sm text-gray-500 mb-4">{selected.description}</p>}
 
             <h3 className="text-sm font-medium text-gray-900 mb-2">Rules</h3>
             {selected.rules && selected.rules.length > 0 ? (
