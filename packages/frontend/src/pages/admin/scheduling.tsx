@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { api } from '../../lib/api-client'
 import { Button, Input, Card, Loading, EmptyState } from '../../components/ui'
+import { weekdayName } from '../../lib/format'
 
 interface Template {
   id: string
@@ -102,7 +103,7 @@ export function AdminScheduling() {
               <div className="space-y-1 mb-4">
                 {selected.rules.map((r: any) => (
                   <div key={r.id} className="flex items-center justify-between text-sm bg-gray-50 px-3 py-1.5 rounded">
-                    <span>Day {r.weekday}: {r.start_time} - {r.end_time}</span>
+                    <span>{weekdayName(r.weekday)}: {r.start_time} - {r.end_time}</span>
                   </div>
                 ))}
               </div>
