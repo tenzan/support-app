@@ -4,7 +4,7 @@ import { api } from '../../lib/api-client'
 import { Badge, Button, Textarea, Select, Loading } from '../../components/ui'
 import { useAuth } from '../../lib/auth-context'
 import type { Ticket, TicketMessage, TicketEvent } from '@support-app/shared'
-import { format } from 'date-fns'
+import { formatLocalDate, formatLocalDateTime } from '../../lib/format'
 
 export function AdminTicketDetail() {
   const { ticketId } = useParams()
@@ -116,7 +116,7 @@ export function AdminTicketDetail() {
                         )}
                       </div>
                       <span className="text-xs text-gray-500">
-                        {format(new Date(msg.created_at), 'MMM d, h:mm a')}
+                        {formatLocalDateTime(msg.created_at)}
                       </span>
                     </div>
                     <p className="text-sm text-gray-800 whitespace-pre-wrap">{msg.body}</p>
@@ -130,7 +130,7 @@ export function AdminTicketDetail() {
                     <span>
                       {evt.event_type.replace(/_/g, ' ')}: {evt.old_value || '—'} → {evt.new_value}
                     </span>
-                    <span>{format(new Date(evt.created_at), 'MMM d, h:mm a')}</span>
+                    <span>{formatLocalDateTime(evt.created_at)}</span>
                     <div className="h-px flex-1 bg-gray-200" />
                   </div>
                 )
@@ -194,11 +194,11 @@ export function AdminTicketDetail() {
             <dl className="space-y-2 text-sm">
               <div>
                 <dt className="text-gray-500">Created</dt>
-                <dd>{format(new Date(ticket.created_at), 'MMM d, yyyy h:mm a')}</dd>
+                <dd>{formatLocalDateTime(ticket.created_at)}</dd>
               </div>
               <div>
                 <dt className="text-gray-500">Updated</dt>
-                <dd>{format(new Date(ticket.updated_at), 'MMM d, yyyy h:mm a')}</dd>
+                <dd>{formatLocalDateTime(ticket.updated_at)}</dd>
               </div>
               <div>
                 <dt className="text-gray-500">Channel</dt>

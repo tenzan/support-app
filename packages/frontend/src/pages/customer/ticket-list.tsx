@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { api } from '../../lib/api-client'
 import { Badge, Loading, EmptyState, Button } from '../../components/ui'
 import type { Ticket, PaginatedResponse } from '@support-app/shared'
-import { format } from 'date-fns'
+import { formatLocalDate } from '../../lib/format'
 
 export function CustomerTicketList() {
   const [data, setData] = useState<PaginatedResponse<Ticket> | null>(null)
@@ -57,7 +57,7 @@ export function CustomerTicketList() {
                 <p className="mt-1 font-medium text-gray-900 truncate">{ticket.subject}</p>
               </div>
               <span className="ml-4 text-sm text-gray-500 whitespace-nowrap">
-                {format(new Date(ticket.created_at), 'MMM d, yyyy')}
+                {formatLocalDate(ticket.created_at)}
               </span>
             </div>
           </Link>

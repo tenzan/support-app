@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router'
 import { api } from '../../lib/api-client'
 import { Badge, Select, Loading, EmptyState } from '../../components/ui'
 import type { Ticket, PaginatedResponse } from '@support-app/shared'
-import { format } from 'date-fns'
+import { formatLocalDate } from '../../lib/format'
 
 export function AdminTicketList() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -114,7 +114,7 @@ export function AdminTicketList() {
                       </Badge>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-500">
-                      {format(new Date(ticket.created_at), 'MMM d, yyyy')}
+                      {formatLocalDate(ticket.created_at)}
                     </td>
                   </tr>
                 ))}

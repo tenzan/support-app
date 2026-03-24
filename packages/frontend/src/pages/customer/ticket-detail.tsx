@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router'
 import { api } from '../../lib/api-client'
 import { Badge, Button, Textarea, Loading } from '../../components/ui'
 import type { Ticket, TicketMessage } from '@support-app/shared'
-import { format } from 'date-fns'
+import { formatLocalDateTime } from '../../lib/format'
 
 export function CustomerTicketDetail() {
   const { ticketId } = useParams()
@@ -64,7 +64,7 @@ export function CustomerTicketDetail() {
         </div>
         <h1 className="mt-2 text-2xl font-bold text-gray-900">{ticket.subject}</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Created {format(new Date(ticket.created_at), 'MMM d, yyyy h:mm a')}
+          Created {formatLocalDateTime(ticket.created_at)}
         </p>
       </div>
 
@@ -83,7 +83,7 @@ export function CustomerTicketDetail() {
                 {msg.sender_id === ticket.requester_id ? 'You' : 'Support'}
               </span>
               <span className="text-xs text-gray-500">
-                {format(new Date(msg.created_at), 'MMM d, yyyy h:mm a')}
+                {formatLocalDateTime(msg.created_at)}
               </span>
             </div>
             <p className="text-sm text-gray-800 whitespace-pre-wrap">{msg.body}</p>
