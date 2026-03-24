@@ -13,6 +13,4 @@ binding = "ATTACHMENTS"
 bucket_name = "support-attachments"
 
 [vars]
-SUPPORT_FROM_EMAIL = "support@yourdomain.com"
-REPLY_TO_DOMAIN = "yourdomain.com"
 APP_URL = "http://localhost:5173"
