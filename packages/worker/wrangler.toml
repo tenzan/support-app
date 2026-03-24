@@ -1,0 +1,18 @@
+name = "support-app-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-18"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "support-db"
+database_id = "placeholder-replace-with-real-id"
+migrations_dir = "src/db/migrations"
+
+[[r2_buckets]]
+binding = "ATTACHMENTS"
+bucket_name = "support-attachments"
+
+[vars]
+SUPPORT_FROM_EMAIL = "support@yourdomain.com"
+REPLY_TO_DOMAIN = "yourdomain.com"
+APP_URL = "http://localhost:5173"
